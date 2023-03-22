@@ -119,8 +119,8 @@ export default {
             axios
                 .delete(`http://localhost:8000/api/enrollment/${id}`)
                 .then(response => {
-                    let i = this.enrollments.map(data => data.id).indexOf(id);
-                    this.enrollments.splice(i, 1)
+                    let i = this.enrollments.data.map(data => data.id).indexOf(id);
+                    this.enrollments.data.splice(i, 1)
                 });
         },
         formatDate(date) {

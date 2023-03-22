@@ -25,24 +25,33 @@
             <thead>
             <tr>
                 <th>ID</th>
-                <th @click="sortByColumn('course_title')" class="text-info">Название курса
+                <th @click="sortByColumn('course_title')" class="text-primary">Название курса
                     <span v-if='sortedColumn=="course_title"'>
                             <i v-if="order === 'asc'">&#8593</i>
                             <i v-else  >&#8595</i>
                     </span>
+                    <span v-else>
+                            <i>&#8597;</i>
+                    </span>
                 </th>
                 <th> Имя пользователя</th>
                 <th> Результат</th>
-                <th @click="sortByColumn('created_at')" class="text-info">Дата записи на курс
+                <th @click="sortByColumn('created_at')" class="text-primary">Дата записи на курс
                     <span v-if='sortedColumn=="created_at"'>
-                            <i v-if="order === 'asc' " class="fas fa-arrow-up">&#8593</i>
-                            <i v-else class="fas fa-arrow-down">&#8595</i>
+                            <i v-if="order === 'asc' ">&#8593</i>
+                            <i v-else >&#8595</i>
+                    </span>
+                    <span v-else>
+                            <i>&#8597;</i>
                     </span>
                 </th>
-                <th @click="sortByColumn('updated_at')" class="text-info"> Дата завершения курса
+                <th @click="sortByColumn('updated_at')" class="text-primary"> Дата завершения курса
                     <span v-if='sortedColumn=="updated_at"'>
-                            <i v-if="order === 'asc' " class="fas fa-arrow-up"> &#8593</i>
-                            <i v-else class="fas fa-arrow-down">&#8595</i>
+                            <i v-if="order === 'asc' " > &#8593</i>
+                            <i v-else >&#8595</i>
+                    </span>
+                    <span v-else>
+                            <i>&#8597;</i>
                     </span>
                 </th>
                 <!-- <th>Actions</th> -->

@@ -6,7 +6,7 @@
                 <form @submit.prevent="addProduct">
                     <div class="form-group">
                         <label>Название курса</label>
-                        <select v-model="enrollment.course_id" class="form-control">
+                        <select v-model="enrollment.course_id" class="form-control" required>
                             <option value="" disabled>Выберите</option>
                             <option
                                 v-for="(course, i) in courses"
@@ -18,18 +18,15 @@
                     </div>
                     <div class="form-group">
                         <label>Имя пользователя</label>
-                        <select v-model="enrollment.user_id" class="form-control">
-                            <option value="" disabled >Выберите</option>
-                            <option
-                                v-for="(user, i) in users"
-                                :value="user['id']"
-                                :key="i">{{ user['name'] }}
-                            </option>
-                        </select>
+                        <input type="text" v-model="enrollment.user_name" class="form-control" required/>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input  type="email" v-model="enrollment.user_email" class="form-control" required/>
                     </div>
                     <div class="form-group">
                         <label>Результaт</label>
-                        <select v-model="enrollment.status" class="form-control">
+                        <select v-model="enrollment.status" class="form-control" required>
                             <option value="" disabled>Выберите</option>
                             <option value="0" :selected="enrollment.status === 0">in Progress</option>
                             <option value="1" :selected="enrollment.status === 1">Complete</option>
@@ -50,16 +47,13 @@ export default {
         return {
             enrollment: {},
             courses: {},
-            users: {},
         }
     },
     mounted() {
         axios
             .get('http://localhost:8000/api/enrollment/create')
             .then(response => {
-                console.log(response)
                 this.courses = response.data.json.courses;
-                this.users = response.data.json.users;
             });
     },
     methods: {

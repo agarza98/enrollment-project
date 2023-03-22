@@ -24,7 +24,8 @@ class StoreEnrollmentRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => 'required|exists:users,id',
+            'user_name' => 'required',
+            'user_email' => 'required|email|unique:users,email',
             'course_id' => 'required|exists:courses,id',
             'status' => 'required'
         ];

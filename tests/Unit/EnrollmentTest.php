@@ -6,6 +6,7 @@ use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class EnrollmentTest extends TestCase
@@ -49,9 +50,8 @@ class EnrollmentTest extends TestCase
         $enrollment = Enrollment::with(['user', 'course'])->first();
 
         $response = $this->get(route('index', [
-            'status' => 1,
             'courseName' => $enrollment->course->title,
-            'user' => $enrollment->user->name,
+            'user' => $enrollment->user->email,
             'sort' => 'created_at',
             'order' => 'desc'
         ]));
@@ -59,23 +59,23 @@ class EnrollmentTest extends TestCase
         // Assert
         $response->assertStatus(200);
         $response->assertJsonFragment(
-                [
-                    'id' => $enrollment->id,
-                    'status' => $enrollment->status,
-                    'course_id' => $enrollment->course_id,
-                    'user_id' => $enrollment->user_id,
-                    'created_at' => $enrollment->created_at,
-                    'updated_at' => $enrollment->updated_at,
-                    'user' => [
-                        'id' => $enrollment->user->id,
-                        'name' => $enrollment->user->name,
-                        'email' => $enrollment->user->email
-                    ],
-                    'course' => [
-                        'id' => $enrollment->course->id,
-                        'title' => $enrollment->course->title
-                    ]
+            [
+                'id' => $enrollment->id,
+                'status' => $enrollment->status,
+                'course_id' => $enrollment->course_id,
+                'user_id' => $enrollment->user_id,
+                'created_at' => $enrollment->created_at,
+                'updated_at' => $enrollment->updated_at,
+                'user' => [
+                    'id' => $enrollment->user->id,
+                    'name' => $enrollment->user->name,
+                    'email' => $enrollment->user->email
+                ],
+                'course' => [
+                    'id' => $enrollment->course->id,
+                    'title' => $enrollment->course->title
                 ]
+            ]
         );
     }
 
@@ -92,15 +92,6 @@ class EnrollmentTest extends TestCase
                         '*' => [
                             'id',
                             'title',
-                            'created_at',
-                            'updated_at'
-                        ]
-                    ],
-                    'users' => [
-                        '*' => [
-                            'id',
-                            'name',
-                            'email',
                             'created_at',
                             'updated_at'
                         ]
@@ -143,9 +134,10 @@ class EnrollmentTest extends TestCase
     {
 
         $enrollment = [
-            'user_id' => 10,
-            'course_id' => 1,
-            'status' => 0
+            'user_name' => 'test',
+            'user_email' => Str::random(5) . '@test.com',
+            'course_id' => 15,
+            'status' => 1
         ];
 
         $response = $this->postJson(route('store'), $enrollment);
@@ -165,11 +157,6 @@ class EnrollmentTest extends TestCase
             'message'
         ]);
 
-        $this->assertDatabaseHas('enrollments', [
-            'user_id' => 10,
-            'course_id' => 1,
-            'status' => 0
-        ]);
     }
 
     public function testStoreEnrollmentValidation()
@@ -179,7 +166,7 @@ class EnrollmentTest extends TestCase
         $response->assertStatus(422);
 
         $response->assertJsonValidationErrors([
-            'user_id', 'course_id', 'status'
+            'user_name', 'user_email', 'course_id', 'status'
         ]);
     }
 

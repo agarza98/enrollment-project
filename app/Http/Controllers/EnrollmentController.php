@@ -43,10 +43,8 @@ class EnrollmentController extends Controller
     {
         try {
             $courses = Course::all();
-            $users = User::all();
             $data = [
                 'courses' => $courses,
-                'users' => $users,
             ];
             return response()->json([
                     'status' => 200,
@@ -63,12 +61,13 @@ class EnrollmentController extends Controller
         }
     }
 
-    public function show(Enrollment $enrollment)
+    public function show($enrollment)
     {
         try {
+            $enrollment = Enrollment::with(['user', 'course'])->where('id', $enrollment)->first();
             return response()->json([
                     'status' => 200,
-                    'json' => $enrollment->with(['user:id,name,email', 'course:id,title'])->first(),
+                    'json' => $enrollment,
                     'message' => 'Success'
                 ]
                 , 200);
@@ -84,9 +83,17 @@ class EnrollmentController extends Controller
     public function store(StoreEnrollmentRequest $request)
     {
         try {
-            $data = $request->validated();
+            $request->validated();
 
-            $enrollment = Enrollment::create($data);
+            $user = User::create([
+                'name' => $request->get('user_name'),
+                'email' => $request->get('user_email'),
+            ]);
+            $enrollment = Enrollment::create([
+                'course_id' => $request->get('course_id'),
+                'user_id' => $user->id,
+                'status' => $request->get('status')
+            ]);
 
             return response()->json([
                     'status' => 201,
